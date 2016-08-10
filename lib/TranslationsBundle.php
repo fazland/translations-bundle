@@ -2,7 +2,10 @@
 
 namespace Fazland\TranslationsBundle;
 
+use DependencyInjection\CompilerPass\AddTranslationResourcesPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * @author Alessandro Chitolina <alekitto@gmail.com>
@@ -10,4 +13,21 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class TranslationsBundle extends Bundle
 {
+    /**
+     * @var Kernel
+     */
+    private $kernel;
+
+    public function __construct(Kernel $kernel)
+    {
+        $this->kernel = $kernel;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new AddTranslationResourcesPass($this->kernel->getBundles()));
+    }
 }
