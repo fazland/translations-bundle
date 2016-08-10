@@ -11,5 +11,10 @@
         { "name": "Giovanni Albero", "email": "giovannialbero.solinf@gmail.com" },
         { "name": "Alessandro Chitolina", "email": "alekitto@gmail.com" }
     ],
+    "autoload": {
+        "psr-4": {
+            "Fazland\\TranslationsBundle\\": "lib/"
+        }
+    },
     "minimum-stability": "stable"
 }
