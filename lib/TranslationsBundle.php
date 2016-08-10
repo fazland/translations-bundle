@@ -2,7 +2,7 @@
 
 namespace Fazland\TranslationsBundle;
 
-use DependencyInjection\CompilerPass\AddTranslationResourcesPass;
+use Fazland\TranslationsBundle\DependencyInjection\CompilerPass\AddTranslationResourcesPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\Kernel;

@@ -29,6 +29,21 @@ class TranslationTest extends WebTestCase
         $this->assertEquals(file_get_contents(__DIR__.'/../Fixtures/Translations/expected/'.$resultFile), $response->getContent());
     }
 
+    public function testCatalogueGeneratedCorrectly()
+    {
+        $client = static::createClient();
+        $client->getKernel()->boot();
+
+        $result = [
+            'messages' => [
+                'TESTBUNDLE---TEST_TRANS--FOO' => 'BAR',
+                'TESTBUNDLE---TEST_TRANS--BAZ' => 'FOO',
+            ]
+        ];
+
+        $this->assertEquals($result, $client->getContainer()->get('translator.default')->getCatalogue('it_IT')->all());
+    }
+
     protected static function createKernel(array $options = [])
     {
         return new AppKernel('test', true);

@@ -1,12 +1,13 @@
 <?php
 
-namespace DependencyInjection\CompilerPass;
+namespace Fazland\TranslationsBundle\DependencyInjection\CompilerPass;
 
 use Fazland\TranslationsBundle\TranslationsInterface;
 use Fazland\TranslationsBundle\Utils\ClassUtils;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -42,9 +43,14 @@ class AddTranslationResourcesPass implements CompilerPassInterface
         foreach ($this->bundles as $bundle) {
             $alias = $this->createLoaderForBundle($container, $bundle);
 
+            $path = $bundle->getPath().'/Translations';
+            if (! file_exists($path) || ! is_dir($path)) {
+                continue;
+            }
+
             $finder = Finder::create()
                 ->files()
-                ->in($bundle->getPath().'/Translations')
+                ->in($path)
                 ->name('*.php');
 
             $this->loadFiles($finder, $translatorDefinition, $alias);
@@ -56,13 +62,17 @@ class AddTranslationResourcesPass implements CompilerPassInterface
         $bundleName = $bundle->getName();
         $alias = 'fazland.translation.'.$bundleName;
 
-        $definition = clone $container->getDefinition('fazland.translations.loader.prototype');
+        $definition = clone $container->getDefinition('fazland_translations.loader.prototype');
 
         $definition
             ->setAbstract(false)
             ->replaceArgument(0, $bundleName)
-            ->addTag('translation.loader', ['alias' => $alias])
             ;
+
+        $container->setDefinition($service_id = 'fazland_translations.loader.'.$bundleName, $definition);
+
+        $container->getDefinition('translator.default')
+            ->addMethodCall('addLoader', [$alias, new Reference($service_id)]);
 
         return $alias;
     }

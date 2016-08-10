@@ -4,18 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="fazland.translations.loader.class">Fazland\TranslationsBundle\Loader</parameter>
+        <parameter key="fazland_translations.loader.class">Fazland\TranslationsBundle\Loader</parameter>
+        <parameter key="fazland_translations.twig_extension.translation_extension.class">Fazland\TranslationsBundle\Twig\Extension\TranslationExtension</parameter>
     </parameters>
 
     <services>
-        <service class="%fazland.translations.loader.class%" id="fazland.translations.loader.prototype" abstract="true">
+        <service class="%fazland_translations.loader.class%" id="fazland_translations.loader.prototype" abstract="true">
             <argument />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
         </service>
 
-        <service class="Fazland\TranslationsBundle\Twig\Extension\TranslationExtension" id="fazland_translations.twig_extension.translation_extension">
+        <service class="%fazland_translations.twig_extension.translation_extension.class%" id="fazland_translations.twig_extension.translation_extension">
+            <argument type="service" id="translator" />
             <tag name="twig.extension" />
         </service>
     </services>

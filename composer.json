@@ -3,6 +3,7 @@
     "description": "Crazy simple translations bundle for Symfony",
     "require": {
         "php": ">=5.5",
+        "symfony/intl": "^2.7|^3.0",
         "symfony/framework-bundle": "^2.7|^3.0",
         "symfony/twig-bundle": "^2.7|^3.0"
     },
