@@ -9,45 +9,67 @@ use Symfony\Component\Translation\TranslatorInterface;
  * @author Alessandro Chitolina <alekitto@gmail.com>
  * @author Giovanni Albero <giovanni.albero@fazland.com>
  */
-class TranslationFunctionNode extends \Twig_Extension
+class TranslationFunctionNode extends \Twig_Node_Expression
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * TranslationExtension constructor
-     *
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct($name, \Twig_Node $arguments, $lineno)
     {
-        $this->translator = $translator;
-    }
+        if (count($arguments) < 1) {
+            throw new \Twig_Error_Syntax("Argument 1 required for function '_'");
+        }
 
-    public function getFunctions()
-    {
-        return [
-            new \Twig_SimpleFunction('_', null, ['node_class' => self::class]),
+        $nodes = array_values($arguments->nodes);
+
+        $keyAttribute = array_shift($nodes);
+        $vars = array_shift($nodes);
+        $domain = array_shift($nodes);
+
+        $attributes = [
+            'vars' => $vars,
+            'key' => $keyAttribute,
+            'domain' => $domain,
+            'name' => $name
         ];
+
+        parent::__construct([], $attributes, $lineno);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getNodeVisitors()
+    public function compile(\Twig_Compiler $compiler)
     {
-        return [
-            new TranslationDefaultDomainNodeVisitor(),
-        ];
-    }
+        $compiler->addDebugInfo($this);
+        $parts = explode(':', $compiler->getFilename());
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'fazland_translation';
+        if (count($parts) !== 3) {
+            throw new \LogicException("This function can be used with short name templates ONLY. Use trans instead");
+        }
+
+        $filename = preg_replace('/.html.twig$/i', '', $parts[2]);
+        $prefix = strtoupper(
+            $parts[0].'---'.
+            trim(str_replace('/', '_', $parts[1]), '_') .
+            '-' .
+            trim(str_replace('/', '_', $filename), '_')
+        );
+
+        $compiler
+            ->raw('$this->env->getExtension(\'translator\')->getTranslator()->trans(\''.$prefix.'--\'.strtoupper((string)')
+            ->subcompile($this->getAttribute('key'))
+            ->raw(')')
+            ->raw(', ');
+
+        $vars = $this->getAttribute('vars');
+        if (empty($vars)) {
+            $compiler->raw('array()');
+        } else {
+            $compiler->subcompile($vars);
+        }
+
+        $domain = $this->getAttribute('domain');
+        if (! empty($domain)) {
+            $compiler
+                ->raw(', ')
+                ->subcompile($domain);
+        }
+
+        $compiler->raw(')');
     }
 }
