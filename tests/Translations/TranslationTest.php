@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazland\TranslationsBundle\Tests\Translations;
+namespace Fazland\TranslationsBundle\tests\Translations;
 
 use Fazland\TranslationsBundle\Tests\Fixtures\Translations\AppKernel;
 use Symfony\Bundle\FrameworkBundle\Tests\Functional\WebTestCase;
@@ -13,7 +13,7 @@ class TranslationTest extends WebTestCase
         return [
             ['/test-base-translation', 'homepage.html'],
             ['/test-translation-from-twig-variable', 'translate_include_variable_result.html'],
-            ['/test-translation-from-twig-expression', 'expression_result.html']
+            ['/test-translation-from-twig-expression', 'expression_result.html'],
         ];
     }
 
@@ -29,7 +29,7 @@ class TranslationTest extends WebTestCase
         $this->assertEquals(file_get_contents(__DIR__.'/../Fixtures/Translations/expected/'.$resultFile), $response->getContent());
     }
 
-    protected static function createKernel(array $options = array())
+    protected static function createKernel(array $options = [])
     {
         return new AppKernel('test', true);
     }
@@ -37,7 +37,7 @@ class TranslationTest extends WebTestCase
     public function tearDown()
     {
         $fs = new Filesystem();
-        $fs->remove(__DIR__ . '/../Fixtures/Translations/cache');
-        $fs->remove(__DIR__ . '/../Fixtures/Translations/logs');
+        $fs->remove(__DIR__.'/../Fixtures/Translations/cache');
+        $fs->remove(__DIR__.'/../Fixtures/Translations/logs');
     }
 }

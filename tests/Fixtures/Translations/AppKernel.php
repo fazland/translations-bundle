@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Kernel;
 class AppKernel extends Kernel
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function registerBundles()
     {
@@ -16,12 +16,12 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
-            new TestBundle\TestBundle()
+            new TestBundle\TestBundle(),
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
