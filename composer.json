@@ -1,0 +1,15 @@
+{
+    "name": "fazland/translations-bundle",
+    "description": "Crazy simple translations bundle for Symfony",
+    "require": {
+        "php": ">=5.5",
+        "symfony/framework-bundle": "^2.7|^3.0"
+    },
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        { "name": "Giovanni Albero", "email": "giovannialbero.solinf@gmail.com" },
+        { "name": "Alessandro Chitolina", "email": "alekitto@gmail.com" }
+    ],
+    "minimum-stability": "stable"
+}
