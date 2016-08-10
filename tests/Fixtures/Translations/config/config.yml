@@ -1,0 +1,19 @@
+services:
+    translation_twig_extension:
+        class: Fazland\TranslationsBundle\Twig\Extension\TranslationExtension
+        arguments:
+            - '@translator'
+        tags:
+            - { name: twig.extension }
+
+framework:
+    secret: test
+    test: ~
+    session:
+        storage_id: session.storage.filesystem
+    csrf_protection: true
+    translator:
+        enabled: true
+    templating: { engines: ['twig'] }
+    router:
+        resource: %kernel.root_dir%/config/routing.yml
